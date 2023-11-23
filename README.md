@@ -29,7 +29,7 @@ pollux decode <ciphertext>
 To install from source, run the following commands:
 
 ```bash
-git clone 
+git clone https://github.com/D4N13LxD4V1D/pollux
 cd pollux
 cmake -B build
 cmake --build build
