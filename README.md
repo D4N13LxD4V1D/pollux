@@ -11,26 +11,16 @@ This is a simple implementation of the Pollux Cipher. It is a cipher that first 
 To encrypt a plaintext, run the following command:
 
 ```bash
-pollux -e -p <plaintext> -k <key>
+pollux encode <plaintext>
 ```
-
-The key is a string of dots (.), dashes (-) and spaces (x). The key is used to map the Morse code to numbers. The key maps to the digits 0-9 in order. For example, the key `.-x-...x-.-.` maps to `0123456789`, respectively.
 
 ### Decryption
 
 To decrypt a ciphertext, run the following command:
 
 ```bash
-pollux -d -c <ciphertext> -k <key>
+pollux decode <ciphertext>
 ```
-
-The key is the same as the one used to encrypt the plaintext. However, if you don't know the exact key used to encrypt the plaintext, you can use the `-s` flag to specify a range of keys. For example, you know that 1 and 3 maps to `.`, 4 and 6 maps to `-`, and 9 maps to `x`, you can use the following command:
-
-```bash
-pollux -d -c <ciphertext> -k ..--x -s 13469
-```
-
-The `-s` flag takes in a string of digits that maps to the key. The digits are mapped to the key in order. For example, the key `..--x` maps to `13469`, respectively.
 
 ## Installation
 
