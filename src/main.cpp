@@ -12,7 +12,7 @@ auto main(int argc, char **argv) -> int {
   std::string input{argv[2]};
 
   if (mode == "encode") {
-    std::cout << PolluxCipher::encode(input) << std::endl;
+    std::cout << *PolluxCipher::encode(input) << std::endl;
   } else if (mode == "decode") {
     std::cout << *PolluxCipher::decode(input) << std::endl;
   } else {

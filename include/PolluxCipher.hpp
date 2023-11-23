@@ -5,7 +5,7 @@
 #include <string>
 
 namespace PolluxCipher {
-auto encode(std::string input) -> std::string;
+auto encode(std::string input) -> std::expected<std::string, std::string>;
 auto decode(std::string input) -> std::expected<std::string, std::string>;
 }; // namespace PolluxCipher
 
