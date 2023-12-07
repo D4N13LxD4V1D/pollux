@@ -11,7 +11,7 @@
 
 auto PolluxCipher::encode(std::string input)
     -> std::expected<std::string, std::string> {
-  std::cout << "Please choose a mapping for the characters '.', '-', and 'x' "
+  std::cout << "Please choose a mapping for the characters '.', '-', and 'x'\n"
                "to the numbers 0-9 (eg. .-.-.-.-xx): ";
 
   std::string line;
@@ -39,14 +39,18 @@ auto PolluxCipher::encode(std::string input)
 auto PolluxCipher::decode(std::string input)
     -> std::expected<std::string, std::string> {
   std::cout
-      << "Please put the known mapping for the characters '.', '-', and 'x' "
-         "to the numbers 0-9 and put '?' for the unknowns (eg. .-??.-.-xx): ";
+      << "Please put the known mapping for the characters '.', '-', and 'x'\n"
+         "to the numbers 0-9 and put '?' for the unknowns (eg. .-??.-.-xx)\n"
+         "or press enter to skip: ";
 
   std::string line;
   std::getline(std::cin, line);
 
-  if (line.size() != 10)
+  if (line.size() != 10 && line.size() != 0)
     return std::unexpected("Invalid mapping! Please try again.");
+  
+  if (line.size() == 0)
+    line = "??????????";
 
   std::vector<std::string> possible_mappings{""};
   for (int i = 0; i < 10; i++) {
