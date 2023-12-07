@@ -1,3 +1,4 @@
+#include <English.hpp>
 #include <MorseCode.hpp>
 #include <PolluxCipher.hpp>
 
@@ -10,7 +11,6 @@
 
 auto PolluxCipher::encode(std::string input)
     -> std::expected<std::string, std::string> {
-  std::map<char, std::vector<int>> mapping;
   std::cout << "Please choose a mapping for the characters '.', '-', and 'x' "
                "to the numbers 0-9 (eg. .-.-.-.-xx): ";
 
@@ -20,6 +20,7 @@ auto PolluxCipher::encode(std::string input)
   if (line.size() != 10)
     return std::unexpected("Invalid mapping! Please try again.");
 
+  std::map<char, std::vector<int>> mapping;
   for (int i = 0; i < 10; i++)
     mapping[line[i]].push_back(i);
 
@@ -37,10 +38,9 @@ auto PolluxCipher::encode(std::string input)
 
 auto PolluxCipher::decode(std::string input)
     -> std::expected<std::string, std::string> {
-  std::map<int, char> mapping;
   std::cout
       << "Please put the known mapping for the characters '.', '-', and 'x' "
-         "to the numbers 0-9 (eg. .-.-.-.-xx): ";
+         "to the numbers 0-9 and put '?' for the unknowns (eg. .-??.-.-xx): ";
 
   std::string line;
   std::getline(std::cin, line);
@@ -48,16 +48,41 @@ auto PolluxCipher::decode(std::string input)
   if (line.size() != 10)
     return std::unexpected("Invalid mapping! Please try again.");
 
-  for (int i = 0; i < 10; i++)
-    mapping[i] = line[i];
+  std::vector<std::string> possible_mappings{""};
+  for (int i = 0; i < 10; i++) {
+    if (line[i] == '?') {
+      std::vector<std::string> new_mappings;
+      for (std::string &mapping : possible_mappings) {
+        new_mappings.push_back(mapping + ".");
+        new_mappings.push_back(mapping + "-");
+        new_mappings.push_back(mapping + "x");
+      }
+      possible_mappings = new_mappings;
+    } else {
+      for (std::string &mapping : possible_mappings)
+        mapping += line[i];
+    }
+  }
 
-  std::string morse = "";
-  for (char c : input)
-    morse += mapping[c - '0'];
+  double confidence = 0.0;
+  std::string output;
+  for (std::string line : possible_mappings) {
+    std::map<int, char> mapping;
+    for (int i = 0; i < 10; i++)
+      mapping[i] = line[i];
 
-  auto output = MorseCode::decode(morse);
-  if (!output)
-    return std::unexpected(output.error());
+    std::string morse = "";
+    for (char c : input)
+      morse += mapping[c - '0'];
 
-  return *output;
+    auto decoded_message = MorseCode::decode(morse);
+    if (!decoded_message)
+      continue;
+
+    if (English::probability(*decoded_message) > confidence) {
+      confidence = English::probability(*decoded_message);
+      output = *decoded_message;
+    }
+  }
+  return output;
 }
